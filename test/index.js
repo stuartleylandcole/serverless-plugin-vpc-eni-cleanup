@@ -9,7 +9,7 @@ const noop   = require("es5-ext/function/noop")
 test("Serverless Plugin VPC ENI Cleanup", t => {
 	const serverlessMock = ec2 => ({
 		cli: { log: noop },
-		service: { functions: { foo: { name: "foo" } }, provider: { region: "eu-west-1" } },
+		service: { functions: { foo: { name: "foo" } }, provider: { region: "eu-west-1" }, custom:{ eniCleanup: { additionalFunctionsToClean: ["additionalFunc"]}} },
 		getProvider() {
 			return { request(service, method, params) { return ec2[method](params).promise(); } };
 		}
@@ -54,7 +54,7 @@ test("Serverless Plugin VPC ENI Cleanup", t => {
 
 		setTimeout(() => {
 			t.equal(
-				plugin.handleError.callCount, 1,
+				plugin.handleError.callCount, 2,
 				"Handles gently eventual not expected AWS SDK errors"
 			);
 			t.end();
