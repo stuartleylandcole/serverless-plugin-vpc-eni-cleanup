@@ -1,51 +1,101 @@
 {
-  "name": "serverless-plugin-vpc-eni-cleanup",
-  "version": "1.0.0",
-  "description": "Cleanup lambda VPS EC2 Network Interfaces on stack removal, to speed up the operation",
-  "author": "Mariusz Nowak <medyk@medikoo.com> (http://www.medikoo.com/)",
-  "keywords": [
-    "serverless",
-    "plugin",
-    "lamdba",
-    "vpc",
-    "eni",
-    "network"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/medikoo/serverless-plugin-vpc-eni-cleanup.git"
-  },
-  "dependencies": {
-    "aws-sdk": "^2.140",
-    "bluebird": "^3.5.1",
-    "d": "1"
-  },
-  "devDependencies": {
-    "es5-ext": "^0.10.35",
-    "eslint": "^4.9",
-    "eslint-config-medikoo": "^1.28",
-    "event-emitter": "^0.3.5",
-    "istanbul": "^0.4.5",
-    "proxyquire": "^1.8",
-    "sinon": "^4.0.2",
-    "tape": "^4.8",
-    "tape-index": "^1.1"
-  },
-  "peerDependencies": {
-    "serverless": "1"
-  },
-  "eslintConfig": {
-    "extends": "medikoo",
-    "root": true,
-    "env": {
-      "node": true
-    }
-  },
-  "scripts": {
-    "coverage": "istanbul cover test/index.js",
-    "check-coverage": "npm run coverage && istanbul check-coverage --statements 100 --function 100 --branches 100 --lines 100",
-    "lint": "eslint --ignore-path=.gitignore .",
-    "test": "node test/index.js"
-  },
-  "license": "MIT"
+	"name": "serverless-plugin-vpc-eni-cleanup",
+	"version": "1.0.3",
+	"description": "Cleanup lambda VPS EC2 Network Interfaces on stack removal, to speed up the operation",
+	"author": "Mariusz Nowak <medyk@medikoo.com> (http://www.medikoo.com/)",
+	"keywords": [
+		"serverless",
+		"plugin",
+		"lamdba",
+		"vpc",
+		"eni",
+		"network"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/medikoo/serverless-plugin-vpc-eni-cleanup.git"
+	},
+	"dependencies": {
+		"aws-sdk": "^2.1039.0",
+		"bluebird": "^3.7.2",
+		"d": "^1.0.1"
+	},
+	"devDependencies": {
+		"es5-ext": "^0.10.53",
+		"eslint": "^8.3.0",
+		"eslint-config-medikoo": "^4.1.1",
+		"event-emitter": "^0.3.5",
+		"git-list-updated": "^1.2.1",
+		"github-release-from-cc-changelog": "^2.2.0",
+		"husky": "^4.3.8",
+		"lint-staged": "^12.1.2",
+		"nyc": "^15.1.0",
+		"prettier-elastic": "^2.2.1",
+		"proxyquire": "^2.1.3",
+		"sinon": "^8.1.1",
+		"tape": "^5.3.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.js": [
+			"eslint"
+		],
+		"*.{css,html,js,json,md,yaml,yml}": [
+			"prettier -c"
+		]
+	},
+	"peerDependencies": {
+		"serverless": "1 || 2 || 3"
+	},
+	"eslintConfig": {
+		"extends": "medikoo/node/6",
+		"root": true
+	},
+	"prettier": {
+		"printWidth": 100,
+		"tabWidth": 4,
+		"overrides": [
+			{
+				"files": [
+					"*.md",
+					"*.yml"
+				],
+				"options": {
+					"tabWidth": 2
+				}
+			}
+		]
+	},
+	"nyc": {
+		"all": true,
+		"exclude": [
+			".github",
+			"coverage/**",
+			"test/**",
+			"*.config.js"
+		],
+		"reporter": [
+			"lcov",
+			"html",
+			"text-summary"
+		]
+	},
+	"scripts": {
+		"coverage": "nyc npm test",
+		"lint": "eslint --ignore-path=.gitignore .",
+		"lint:updated": "pipe-git-updated --ext=js -- eslint --ignore-pattern '!*'",
+		"prettier-check": "prettier -c --ignore-path .gitignore \"**/*.{css,html,js,json,md,yaml,yml}\"",
+		"prettier-check:updated": "pipe-git-updated --ext=css --ext=html --ext=js --ext=json --ext=md --ext=yaml --ext=yml -- prettier -c",
+		"prettify": "prettier --write --ignore-path .gitignore \"**/*.{css,html,js,json,md,yaml,yml}\"",
+		"prettify:updated": "pipe-git-updated --ext=css --ext=html --ext=js --ext=json --ext=md --ext=yaml --ext=yml -- prettier --write",
+		"test": "node test/index.js"
+	},
+	"engines": {
+		"node": ">=6.0"
+	},
+	"license": "MIT"
 }
