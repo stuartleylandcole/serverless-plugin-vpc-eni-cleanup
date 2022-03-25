@@ -32,69 +32,9 @@ class ServerlessPluginVpcEniCleanup {
 					.then(
 						result =>
 							Promise.all(
-<<<<<<< HEAD
-								result.NetworkInterfaces.map(networkInterface => {
-									const interfaceId = networkInterface.NetworkInterfaceId;
-									let detachmentPromise = noopPromise;
-									if (networkInterface.Attachment) {
-										detachmentPromise = this.ec2
-											.detachNetworkInterface({
-												AttachmentId:
-													networkInterface.Attachment.AttachmentId
-											})
-											.promise()
-											.then(
-												() =>
-													this.serverless.cli.log(
-														"VPC ENI Cleanup: " +
-															`Detached ${ interfaceId } ` +
-															`Attachment ${ networkInterface.Attachment.AttachmentId } ` +
-															`ENI of ${ functionName } ` +
-															"VPC function"
-											));
-									}
-									return detachmentPromise.then(
-										() =>
-											this.ec2
-												.deleteNetworkInterface({
-													NetworkInterfaceId: interfaceId
-												})
-												.promise()
-												.then(
-													() =>
-														this.serverless.cli.log(
-															"VPC ENI Cleanup: " +
-																`Deleted ${ interfaceId } ` +
-																`ENI of ${ functionName } ` +
-																"VPC function"
-														),
-													error => {
-														if (
-															error.code === "InvalidParameterValue"
-														) {
-															// Network interface is currently in use
-															// Skip on this error, as it may happen
-															// few times for given interface
-															return;
-														}
-														if (
-															error.code ===
-															"InvalidNetworkInterfaceID.NotFound"
-														) {
-															// Interface was already deleted
-															return;
-														}
-														this.handleError(error);
-													}
-												),
-										this.handleError.bind(this)
-									);
-								})
-=======
 								result.NetworkInterfaces.map(networkInterface =>
 									this._deleteNetworkInterface(networkInterface, functionName)
 								)
->>>>>>> 69afe39d3e73c74b1070305507362e490a41fc62
 							),
 						this.handleError.bind(this)
 					)
